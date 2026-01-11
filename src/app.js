@@ -1,19 +1,27 @@
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
+const { info } = require("winston");
+
 const logger = require("./utils/logger");
-// const { info } = require("winston");
-const errorHandler = require("./middlewares/errorHandlers");
 const cacheClient = require("./services/cache.service");
+const errorHandler = require("./middlewares/errorHandlers");
+
+const userRoutes = require("./routes/user.routes");
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("tiny"));
 app.use(errorHandler);
+app.use(cookieParser());
 
+// Routes
 app.get("/", (req, res) => {
   res.send("Welcome to the Airline Booking Home Page!");
 });
+
+app.use("/api/users", userRoutes);
 
 module.exports = app;
