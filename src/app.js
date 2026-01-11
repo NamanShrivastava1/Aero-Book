@@ -2,8 +2,9 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const logger = require("./utils/logger");
-const { info } = require("winston");
+// const { info } = require("winston");
 const errorHandler = require("./middlewares/errorHandlers");
+const cacheClient = require("./services/cache.service");
 
 // Middleware
 app.use(express.json());
