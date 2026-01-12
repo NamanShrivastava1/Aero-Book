@@ -1,5 +1,7 @@
 const userModel = require("../models/user.model");
 const customError = require("../utils/customError");
+const cacheClient = require("../services/cache.service");
+const logger = require("../utils/logger");
 
 module.exports.registerUser = async (req, res, next) => {
   const { userName, email, phone, password, address } = req.body;
@@ -11,7 +13,6 @@ module.exports.registerUser = async (req, res, next) => {
     const userExists = await userModel.findOne({ email });
     if (userExists) {
       throw new customError("User already exists", 409);
-
     }
 
     const user = await userModel.create({
@@ -20,6 +21,11 @@ module.exports.registerUser = async (req, res, next) => {
       phone,
       password,
       address,
+    });
+
+    logger.info("User registered successfully", {
+      userId: user._id,
+      email: user.email,
     });
 
     const token = await user.generateAuthToken();
@@ -67,6 +73,11 @@ module.exports.loginUser = async (req, res, next) => {
       maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
     });
 
+    logger.info("User logged in", {
+      userId: user._id,
+      email: user.email,
+    });
+
     res.status(200).json({
       success: true,
       message: "User logged in successfully",
@@ -84,3 +95,53 @@ module.exports.loginUser = async (req, res, next) => {
   }
 };
 
+module.exports.getUserProfile = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const user = await userModel.findById(userId).select("-password");
+
+    if (!user) {
+      throw new customError("User not found", 404);
+    }
+
+    logger.info("User profile accessed", {
+      userId: user._id,
+    });
+
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports.logoutUser = async (req, res, next) => {
+  try {
+    const { token } = req.cookies;
+    if (!token) {
+      throw new customError("No token found", 400);
+    }
+
+    const blacklistedToken = await cacheClient.set(
+      token,
+      "blacklisted",
+      "EX",
+      3600
+    );
+
+    res.clearCookie("token");
+
+    logger.info("User logged out", {
+      token: token.slice(0, 10) + "...", // NEVER log full token
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "User logged out successfully",
+    });
+  } catch (error) {
+    throw error;
+  }
+};
