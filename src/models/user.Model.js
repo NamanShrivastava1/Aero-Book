@@ -48,7 +48,7 @@ userSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
-userSchema.static.authenticateUser = async function (email, password) {
+userSchema.statics.authenticateUser = async function (email, password) {
   const user = await this.findOne({ email });
   if (!user) {
     throw new customError("User Not Found", 404);

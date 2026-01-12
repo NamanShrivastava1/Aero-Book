@@ -11,6 +11,7 @@ module.exports.registerUser = async (req, res, next) => {
     const userExists = await userModel.findOne({ email });
     if (userExists) {
       throw new customError("User already exists", 409);
+
     }
 
     const user = await userModel.create({
@@ -48,3 +49,38 @@ module.exports.registerUser = async (req, res, next) => {
     throw error;
   }
 };
+
+module.exports.loginUser = async (req, res, next) => {
+  const { email, password } = req.body;
+  try {
+    if (!email || !password) {
+      throw new customError("Email and Password are required", 400);
+    }
+
+    const user = await userModel.authenticateUser(email, password);
+
+    const token = await user.generateAuthToken();
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "User logged in successfully",
+      user: {
+        id: user._id,
+        userName: user.userName,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+      },
+      token,
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
