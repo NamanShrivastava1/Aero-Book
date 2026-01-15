@@ -4,7 +4,8 @@ const cacheClient = require("../services/cache.service");
 const logger = require("../utils/logger");
 
 module.exports.registerUser = async (req, res, next) => {
-  const { userName, email, phone, password, address } = req.body;
+  const { userName, email, phone, password, address, airlineOwnerSecret } =
+    req.body;
   try {
     if (!userName || !email || !phone || !password || !address) {
       throw new customError("All fields are required", 400);
@@ -15,12 +16,16 @@ module.exports.registerUser = async (req, res, next) => {
       throw new customError("User already exists", 409);
     }
 
+    const isAirlineOwner =
+      airlineOwnerSecret === process.env.AIRLINE_OWNER_SECRET;
+
     const user = await userModel.create({
       userName,
       email,
       phone,
       password,
       address,
+      isAirlineOwner,
     });
 
     logger.info("User registered successfully", {
@@ -45,6 +50,7 @@ module.exports.registerUser = async (req, res, next) => {
         email: user.email,
         phone: user.phone,
         address: user.address,
+        isAirlineOwner: user.isAirlineOwner,
       },
       token,
     });

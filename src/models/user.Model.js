@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema(
     address: {
       type: String,
     },
+    isAirlineOwner: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

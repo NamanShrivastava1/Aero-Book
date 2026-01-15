@@ -9,6 +9,7 @@ const cacheClient = require("./services/cache.service");
 const errorHandler = require("./middlewares/errorHandlers");
 
 const userRoutes = require("./routes/user.routes");
+const airlineRoutes = require("./routes/airline.routes");
 
 // Middleware
 app.use(express.json());
@@ -23,5 +24,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/users", userRoutes);
+app.use("/api/airlines", airlineRoutes);
 
 module.exports = app;
