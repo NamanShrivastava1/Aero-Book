@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const flightSchema = new mongoose.Schema(
   {
     airlineId: {
@@ -24,7 +26,7 @@ const flightSchema = new mongoose.Schema(
     },
     departureTime: {
       type: String, // HH:MM
-      required: true, 
+      required: true,
     },
     arrivalTime: {
       type: String, // HH:MM
@@ -43,7 +45,7 @@ const flightSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["scheduled", "cancelled", "delayed"],
+      enum: ["scheduled", "departed", "cancelled", "delayed"],
       default: "scheduled",
     },
   },

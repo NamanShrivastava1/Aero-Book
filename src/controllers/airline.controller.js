@@ -40,7 +40,7 @@ module.exports.createAirline = async (req, res, next) => {
       airline: newAirline,
     });
   } catch (err) {
-    throw new customError(err.message, err.status || 500);
+    throw new customError(err.message, 500);
   }
 };
 

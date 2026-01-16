@@ -10,12 +10,12 @@ const errorHandler = require("./middlewares/errorHandlers");
 
 const userRoutes = require("./routes/user.routes");
 const airlineRoutes = require("./routes/airline.routes");
+const flightRoutes = require("./routes/flight.routes");
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("tiny"));
-app.use(errorHandler);
 app.use(cookieParser());
 
 // Routes
@@ -25,5 +25,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/users", userRoutes);
 app.use("/api/airlines", airlineRoutes);
+app.use("/api/flights", flightRoutes);
+
+app.use(errorHandler);
 
 module.exports = app;
