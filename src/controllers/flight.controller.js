@@ -1,5 +1,7 @@
 const airlineModel = require("../models/airline.Model");
 const flightModel = require("../models/flight.Model");
+const cacheClient = require("../services/cache.service");
+const seatLockService = require("../services/seatLock.service");
 const customError = require("../utils/customError");
 
 module.exports.createFlight = async (req, res, next) => {
@@ -162,5 +164,20 @@ module.exports.getPublicFlights = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  }
+};
+
+module.exports.getSeatStatus = async (req, res, next) => {
+  try {
+    const { flightId } = req.params;
+
+    const lockedSeats = await seatLockService.getLockedSeats(flightId);
+
+    res.json({
+      success: true,
+      lockedSeats,
+    });
+  } catch (err) {
+    next(err);
   }
 };

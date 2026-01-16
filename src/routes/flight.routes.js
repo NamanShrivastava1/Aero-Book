@@ -28,4 +28,7 @@ router.get("/get-flights", airlineOwnerMiddleware, flightController.getFlights);
 // Get Flights Public
 router.get("/public-flights", flightController.getPublicFlights);
 
+// Get Seat Status
+router.get("/:flightId/seat-status", flightController.getSeatStatus);
+
 module.exports = router;

@@ -11,6 +11,7 @@ const errorHandler = require("./middlewares/errorHandlers");
 const userRoutes = require("./routes/user.routes");
 const airlineRoutes = require("./routes/airline.routes");
 const flightRoutes = require("./routes/flight.routes");
+const bookingRoutes = require("./routes/booking.routes");
 
 // Middleware
 app.use(express.json());
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 app.use("/api/users", userRoutes);
 app.use("/api/airlines", airlineRoutes);
 app.use("/api/flights", flightRoutes);
+app.use("/api/bookings", bookingRoutes);
 
 app.use(errorHandler);
 

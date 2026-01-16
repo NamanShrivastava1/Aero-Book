@@ -43,6 +43,16 @@ const flightSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    // seats: [
+    //   {
+    //     seatNumber: String, // "A1", "A2"
+    //     status: {
+    //       type: String,
+    //       enum: ["Available", "Booked"],
+    //       default: "Available",
+    //     },
+    //   },
+    // ],
     status: {
       type: String,
       enum: ["scheduled", "departed", "cancelled", "delayed"],
