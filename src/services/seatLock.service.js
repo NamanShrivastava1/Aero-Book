@@ -1,7 +1,7 @@
 const cacheClient = require("./cache.service");
 const customErrors = require("../utils/customError");
 
-const LOCK_TTL = 600; // 10 min
+const LOCK_TTL = 600; // 10 min (TTL = Time To Live)
 
 module.exports.lockSeats = async ({ flightId, userId, seatNumbers }) => {
   for (const seat of seatNumbers) {
